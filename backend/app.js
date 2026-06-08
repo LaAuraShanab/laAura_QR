@@ -1,4 +1,4 @@
-require("dotenv").config();
+//require("dotenv").config(); for production, for development use nodemon with --exec "node -r dotenv/config" to load environment variables from .env file
 
 const express = require("express");
 const mongoose = require("mongoose");

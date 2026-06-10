@@ -1,11 +1,12 @@
 const Category = require("../models/Category");
+const SubCategory = require("../models/SubCategory");
 const MenuItem = require("../models/MenuItems");
 
 const createCategory = async (req, res) => {
 
     try {
 
-        const { name, desc } = req.body;
+        const { name,nameEN, desc } = req.body;
 
         const exists = await Category.findOne({ name });
 
@@ -15,7 +16,7 @@ const createCategory = async (req, res) => {
             });
         }
 
-        const category = await Category.create({ name, desc });
+        const category = await Category.create({ name, nameEN, desc });
 
         res.status(201).json(category);
 
@@ -30,7 +31,7 @@ const createCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, desc } = req.body;
+        const { name,nameEN, desc } = req.body;
 
         const existing = await Category.findOne({ name, _id: { $ne: id } });
         if (existing) {
@@ -42,7 +43,7 @@ const updateCategory = async (req, res) => {
         const updatedCategory = await Category.findByIdAndUpdate(
             id,
             { name, desc },
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         );
 
         if (!updatedCategory) {
@@ -91,10 +92,13 @@ const deleteCategory = async (req, res) => {
             });
         }
 
-        await MenuItem.deleteMany({ category: id });
+        await Promise.all([
+            SubCategory.deleteMany({ category: id }),
+            MenuItem.deleteMany({ category: id })
+        ]);
 
         res.status(200).json({
-            message: "Category and related items deleted successfully"
+            message: "Category, subcategories, and related menu items deleted successfully"
         });
 
     } catch (error) {

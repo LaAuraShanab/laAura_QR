@@ -30,6 +30,11 @@ const menuItemSchema = new mongoose.Schema({
         ref: "Category",
         required: true
     },
+    subCategory: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "SubCategory",
+        required: true
+    },
     available: {
         type: Boolean,
         default: true

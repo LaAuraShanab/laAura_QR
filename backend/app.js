@@ -1,4 +1,4 @@
-//require("dotenv").config(); for production, for development use nodemon with --exec "node -r dotenv/config" to load environment variables from .env file
+require("dotenv").config();// for production, for development use nodemon with --exec "node -r dotenv/config" to load environment variables from .env file
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -7,6 +7,7 @@ const path = require("path")
 const menuRoutes = require("./routes/MenuRoute");
 const authRoutes = require("./routes/authRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
+const subCategoryRoutes = require("./routes/subCategoryRoutes");
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/menu", menuRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/uploads",express.static(path.join(__dirname,"uploads")))
+app.use("/api/subcategories", subCategoryRoutes);
 
 app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`);

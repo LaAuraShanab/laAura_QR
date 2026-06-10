@@ -1,5 +1,6 @@
 const MenuItem = require("../models/MenuItems");
 const Category = require("../models/Category");
+const SubCategory = require("../models/SubCategory");
 
 const createMenuItem = async (req, res) => {
 
@@ -11,6 +12,7 @@ const createMenuItem = async (req, res) => {
             description,
             price,
             category,
+            subCategory,
             imageUrl
         } = req.body;
 
@@ -20,6 +22,13 @@ const createMenuItem = async (req, res) => {
             return res.status(400).json({
                 message: "Invalid category"
             });
+        const subCategoryExists = await SubCategory.findById(subCategory);
+
+            if (!subCategoryExists) {
+                return res.status(400).json({
+                    message: "Invalid subcategory"
+                });
+            }
         }
         const menuItem = await MenuItem.create({
             name,
@@ -27,6 +36,7 @@ const createMenuItem = async (req, res) => {
             description,
             price,
             category,
+            subCategory,
             imageUrl
         });
 
@@ -69,7 +79,7 @@ const updateMenuItem = async (req, res) => {
             id,
             req.body,
             {
-                new: true,
+                returnDocument: 'after',
                 runValidators: true
             }
         );
@@ -140,6 +150,55 @@ const getMenuByCategory = async (req, res) => {
         });
     }
 };
+const getMenuTree = async (req, res) => {
+
+    try {
+
+        const categories = await Category.find();
+
+        const result = [];
+
+        for (const category of categories) {
+
+            const subCategories =
+                await SubCategory.find({
+                    category: category._id
+                });
+
+            const subCategoryResult = [];
+
+            for (const sub of subCategories) {
+
+                const items =
+                    await MenuItem.find({
+                        category: category._id,
+                        subCategory: sub._id,
+                        available: true
+                    });
+
+                subCategoryResult.push({
+                    ...sub.toObject(),
+                    items
+                });
+            }
+
+            result.push({
+                ...category.toObject(),
+                subCategories: subCategoryResult
+            });
+        }
+
+        res.json(result);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            message: "Failed to build menu tree"
+        });
+    }
+};
 
 module.exports = {
     createMenuItem,
@@ -147,4 +206,5 @@ module.exports = {
     updateMenuItem,
     deleteMenuItem,
     getMenuByCategory,
+    getMenuTree
 };

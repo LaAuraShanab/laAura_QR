@@ -6,7 +6,7 @@ const protect = (req, res, next) => {
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(401).json({
-            message: "Invalid Input"
+            message: "Unauthorized"
         });
     }
 
@@ -23,7 +23,8 @@ const protect = (req, res, next) => {
     } catch (error) {
 
         return res.status(401).json({
-            message: "Invalid token"
+            message: "Unauthorized",
+            error: error.message
         });
     }
 };

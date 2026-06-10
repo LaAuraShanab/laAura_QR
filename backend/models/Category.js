@@ -6,6 +6,12 @@ const categorySchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
+    nameEN: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true
+    },
     desc: {
         type: String,
         trim: true,

@@ -21,6 +21,11 @@ const menuItemSchema = new mongoose.Schema({
         required: true,
         min: 0
     },
+    secondPrice: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
     imageUrl: {
         type: String,
         default: ""

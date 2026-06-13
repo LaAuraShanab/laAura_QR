@@ -11,10 +11,23 @@ const createMenuItem = async (req, res) => {
             nameEN,
             description,
             price,
+            secondPrice,
             category,
             subCategory,
             imageUrl
         } = req.body;
+
+        if (price == null || isNaN(Number(price)) || Number(price) < 0) {
+            return res.status(400).json({
+                message: "Invalid price"
+            });
+        }
+
+        if (secondPrice != null && (isNaN(Number(secondPrice)) || Number(secondPrice) < 0)) {
+            return res.status(400).json({
+                message: "Invalid second price"
+            });
+        }
 
         const categoryExists = await Category.findById(category);
 
@@ -22,19 +35,22 @@ const createMenuItem = async (req, res) => {
             return res.status(400).json({
                 message: "Invalid category"
             });
+        }
+
         const subCategoryExists = await SubCategory.findById(subCategory);
 
-            if (!subCategoryExists) {
-                return res.status(400).json({
-                    message: "Invalid subcategory"
-                });
-            }
+        if (!subCategoryExists) {
+            return res.status(400).json({
+                message: "Invalid subcategory"
+            });
         }
+
         const menuItem = await MenuItem.create({
             name,
             nameEN,
             description,
             price,
+            secondPrice,
             category,
             subCategory,
             imageUrl

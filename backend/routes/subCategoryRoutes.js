@@ -7,6 +7,7 @@ const {
     createSubCategory,
     getSubCategories,
     getSubCategoriesByCategory,
+    updateSubCategory,
     deleteSubCategory
 } = require("../controllers/subCategoryController");
 
@@ -18,6 +19,8 @@ router.get(
     "/category/:categoryId",
     getSubCategoriesByCategory
 );
+
+router.put("/:id", protect, updateSubCategory);
 
 router.delete("/:id", protect, deleteSubCategory);
 

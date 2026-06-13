@@ -77,6 +77,48 @@ const getSubCategoriesByCategory = async (req, res) => {
     }
 };
 
+const updateSubCategory = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, nameEN, category } = req.body;
+
+        const subCategory = await SubCategory.findById(id);
+
+        if (!subCategory) {
+            return res.status(404).json({
+                message: "Subcategory not found"
+            });
+        }
+
+        // If category is being updated, verify it exists
+        if (category) {
+            const categoryExists = await Category.findById(category);
+            if (!categoryExists) {
+                return res.status(400).json({
+                    message: "Category not found"
+                });
+            }
+        }
+
+        const updatedSubCategory = await SubCategory.findByIdAndUpdate(
+            id,
+            {
+                ...(name && { name }),
+                ...(nameEN && { nameEN }),
+                ...(category && { category })
+            },
+            { returnDocument: 'after' }
+        ).populate("category");
+
+        res.status(200).json(updatedSubCategory);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Failed to update subcategory"
+        });
+    }
+};
+
 const deleteSubCategory = async (req, res) => {
     try {
         const { id } = req.params;
@@ -106,5 +148,6 @@ module.exports = {
     createSubCategory,
     getSubCategories,
     getSubCategoriesByCategory,
+    updateSubCategory,
     deleteSubCategory
 };

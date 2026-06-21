@@ -43,6 +43,11 @@ const menuItemSchema = new mongoose.Schema({
     available: {
         type: Boolean,
         default: true
+    },
+    sortOrder: {
+        type: Number,
+        default: 0,
+        min: 0
     }
 }, {
     timestamps: true

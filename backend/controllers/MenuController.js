@@ -14,7 +14,8 @@ const createMenuItem = async (req, res) => {
             secondPrice,
             category,
             subCategory,
-            imageUrl
+            imageUrl,
+            sortOrder
         } = req.body;
 
         if (price == null || isNaN(Number(price)) || Number(price) < 0) {
@@ -53,7 +54,8 @@ const createMenuItem = async (req, res) => {
             secondPrice,
             category,
             subCategory,
-            imageUrl
+            imageUrl,
+            sortOrder
         });
 
         res.status(201).json(menuItem);
@@ -73,7 +75,8 @@ const getMenuItems = async (req, res) => {
     try {
 
         const items = await MenuItem.find()
-            .populate("category");
+            .populate("category")
+            .sort({ sortOrder: 1 });
 
         res.status(200).json(items);
 
@@ -155,7 +158,8 @@ const getMenuByCategory = async (req, res) => {
         const items = await MenuItem.find({
             category: categoryId,
             available: true
-        }).populate("category");
+        }).populate("category")
+            .sort({ sortOrder: 1 });
 
         res.json(items);
 
@@ -190,7 +194,7 @@ const getMenuTree = async (req, res) => {
                         category: category._id,
                         subCategory: sub._id,
                         available: true
-                    });
+                    }).sort({ sortOrder: 1 });
 
                 subCategoryResult.push({
                     ...sub.toObject(),

@@ -14,6 +14,10 @@ const subCategoryRoutes = require("./routes/subCategoryRoutes");
 
 const app = express();
 
+// Trust the first proxy hop on Render / reverse proxy deployments so
+// express-rate-limit can read X-Forwarded-For correctly.
+app.set("trust proxy", Number(process.env.TRUST_PROXY) || 1);
+
 // Basic configuration checks
 if (!process.env.JWT_SECRET) {
     console.error("FATAL: JWT_SECRET is not set in environment variables. Exiting.");
